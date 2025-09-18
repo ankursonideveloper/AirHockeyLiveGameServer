@@ -5,7 +5,7 @@ dotenv.config();
 const { Pool } = pkg;
 
 const pool = new Pool({
-  connectionString: `postgresql://postgres:${process.env.db_password}@db.uqfefheoupocxczeqrwy.supabase.co:5432/postgres`,
+  connectionString: `postgresql://postgres.uqfefheoupocxczeqrwy:${process.env.db_password}@aws-1-ap-south-1.pooler.supabase.com:6543/postgres`,
   ssl: { rejectUnauthorized: false },
 });
 
