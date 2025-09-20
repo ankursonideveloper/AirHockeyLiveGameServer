@@ -22,3 +22,11 @@ export const setPasswordResetOtpByUsername = async (username, otp) => {
   );
   return result.rows[0];
 };
+
+export const updateNewPasswordByUserName = async (username, password) => {
+  const result = await pool.query(
+    "Update users set password = $1 WHERE username = $2",
+    [password, username]
+  );
+  return result.rows[0];
+};

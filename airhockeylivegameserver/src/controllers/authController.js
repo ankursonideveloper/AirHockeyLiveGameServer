@@ -5,6 +5,7 @@ import {
   createUser,
   findUserByUsername,
   setPasswordResetOtpByUsername,
+  updateNewPasswordByUserName,
 } from "../models/userModel.js";
 
 export const register = async (req, res) => {
@@ -108,6 +109,56 @@ export const forgotPaasword = async (req, res) => {
     await setPasswordResetOtpByUsername(username, OTP);
 
     res.status(200).json({ message: "OTP sent successfully", success: true });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error", error: err.message, success: false });
+  }
+};
+
+export const verifyForgotPasswordOTP = async (req, res) => {
+  try {
+    console.log(`In verifyRegisterOTP Controller`);
+    const { username, otp } = req.body;
+    console.log(`User: ${username}, otp: ${otp}`);
+
+    const existing = await findUserByUsername(username);
+    console.log(`fetchedUser: ${JSON.stringify(existing, null, 2)}`);
+    if (!existing)
+      return res
+        .status(401)
+        .json({ message: "Anauthorized request", success: false });
+
+    let doesOTPMatch = existing.forgot_password_otp == otp ? true : false;
+    if (doesOTPMatch) {
+      res.status(200).json({ message: "OTP matches", success: true });
+    }
+    res.status(400).json({ message: "Wrong OTP", success: false });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error", error: err.message, success: false });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    console.log(`In resetPassword Controller`);
+    const { username, password } = req.body;
+    console.log(`User: ${username}, otp: ${password}`);
+
+    const existing = await findUserByUsername(username);
+    console.log(`fetchedUser: ${JSON.stringify(existing, null, 2)}`);
+    if (!existing)
+      return res
+        .status(401)
+        .json({ message: "Anauthorized request", success: false });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await updateNewPasswordByUserName(username, hashedPassword);
+    res
+      .status(200)
+      .json({ message: "Password Updated Successfully", success: true });
   } catch (err) {
     res
       .status(500)
