@@ -14,3 +14,11 @@ export const findUserByUsername = async (username) => {
   ]);
   return result.rows[0];
 };
+
+export const setPasswordResetOtpByUsername = async (username, otp) => {
+  const result = await pool.query(
+    "Update users set forgot_password_otp = $1 WHERE username = $2",
+    [otp, username]
+  );
+  return result.rows[0];
+};

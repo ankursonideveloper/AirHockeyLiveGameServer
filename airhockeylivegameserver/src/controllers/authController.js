@@ -1,7 +1,11 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { OTPSender } from "../Services/OTPSender.js";
-import { createUser, findUserByUsername } from "../models/userModel.js";
+import {
+  createUser,
+  findUserByUsername,
+  setPasswordResetOtpByUsername,
+} from "../models/userModel.js";
 
 export const register = async (req, res) => {
   try {
@@ -81,5 +85,32 @@ export const login = async (req, res) => {
     res.json({ message: "Login successful", token, success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+export const forgotPaasword = async (req, res) => {
+  try {
+    console.log(`In forgotPaasword Controller`);
+    const { username } = req.body;
+
+    const existing = await findUserByUsername(username);
+    if (!existing)
+      return res
+        .status(400)
+        .json({ message: "User does not exist", success: false });
+
+    const OTP = Math.floor(100000 + Math.random() * 900000);
+    await OTPSender(
+      username,
+      "OTP Verification for resetting password",
+      `Use this 6 digit OTP to complete your password reset in NEON PONG Game: ${OTP}`
+    );
+    await setPasswordResetOtpByUsername(username, OTP);
+
+    res.status(200).json({ message: "OTP sent successfully", success: true });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error", error: err.message, success: false });
   }
 };
