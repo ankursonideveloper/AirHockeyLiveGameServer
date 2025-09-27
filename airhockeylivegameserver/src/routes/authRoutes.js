@@ -6,6 +6,8 @@ import {
   forgotPaasword,
   verifyForgotPasswordOTP,
   resetPassword,
+  generateForgotPasswordOtp,
+  generateRegisterOtp,
 } from "../controllers/authController.js";
 import { authenticate } from "../middleware/authMiddleware.js";
 
@@ -17,6 +19,9 @@ router.post("/login", login);
 router.post("/forgot-password", forgotPaasword);
 router.post("/verify-forgot-password", verifyForgotPasswordOTP);
 router.post("/update-password", resetPassword);
+router.post("/generate-register-otp", generateRegisterOtp);
+router.post("/generate-forgot-password-otp", generateForgotPasswordOtp);
+
 router.get("/protected", authenticate, (req, res) => {
   res.json({ message: `Hello User ${req.user.id}, this is protected` });
 });
