@@ -95,9 +95,9 @@ export const login = async (req, res) => {
 
       return res.json({ message: "Login successful", token, success: true });
     }
-    return res.json({ message: "User not registered", token, success: false });
+    return res.json({ message: "User not registered", success: false });
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
