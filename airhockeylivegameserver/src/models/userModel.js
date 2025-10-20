@@ -1,4 +1,5 @@
 import pool from "../config/db.js";
+import { isUserAlreadyOnline } from "../Services/realTimeServices/realTimeServices.js";
 
 export const createUser = async (username, password, registerotp) => {
   const result = await pool.query(
@@ -52,4 +53,8 @@ export const deleteUser = async (username) => {
     username,
   ]);
   return result.rows[0];
+};
+
+export const userPresent = async (username) => {
+  return isUserAlreadyOnline(username);
 };

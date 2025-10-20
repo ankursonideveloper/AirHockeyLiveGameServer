@@ -16,12 +16,24 @@ export const addPlayerInAvailablePlayers = async (useremail, socketid) => {
 export const deletePlayerFromAvailablePlayers = async (useremail) => {
   try {
     const result = await pool.query(
-      "Delete from available_players where username = $1",
+      "Delete from available_players where user_id = $1",
       [useremail]
     );
     return result.rows[0];
   } catch (e) {
     console.log(`Erron in deletePlayerFromAvailablePlayers: ${e.stack}`);
     throw e;
+  }
+};
+
+export const isUserAlreadyOnline = async (useremail) => {
+  try {
+    const result = await pool.query(
+      "Select id from available_players where user_id = $1",
+      [useremail]
+    );
+    return result.rows.length > 0;
+  } catch (e) {
+    console.log(`Error in isUserAlreadyOnline: ${e.stack}`);
   }
 };

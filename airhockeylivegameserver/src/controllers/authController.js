@@ -9,6 +9,7 @@ import {
   updateNewPasswordByUserName,
   setUserAsRegistered,
   deleteUser,
+  userPresent,
 } from "../models/userModel.js";
 
 export const register = async (req, res) => {
@@ -171,7 +172,7 @@ export const resetPassword = async (req, res) => {
     if (!existing)
       return res
         .status(401)
-        .json({ message: "Anauthorized request", success: false });
+        .json({ message: "Unauthorized request", success: false });
 
     const hashedPassword = await bcrypt.hash(password, 10);
     await updateNewPasswordByUserName(username, hashedPassword);
@@ -224,6 +225,19 @@ export const generateForgotPasswordOtp = async (req, res) => {
     return res
       .status(200)
       .json({ message: "OTP Sent successfully", success: true });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ message: "Error", error: err.message, success: false });
+  }
+};
+
+export const isUserPresent = async (req, res) => {
+  try {
+    const username = req.body;
+    if (!username)
+      return res.status(401).json({ message: false, success: true });
+    return res.status(200).JSON({ message: true, success: true });
   } catch (err) {
     return res
       .status(500)

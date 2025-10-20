@@ -8,6 +8,7 @@ import {
   resetPassword,
   generateForgotPasswordOtp,
   generateRegisterOtp,
+  isUserPresent,
 } from "../controllers/authController.js";
 import { authenticate } from "../middleware/authMiddleware.js";
 
@@ -21,6 +22,7 @@ router.post("/verify-forgot-password", verifyForgotPasswordOTP);
 router.post("/update-password", resetPassword);
 router.post("/generate-register-otp", generateRegisterOtp);
 router.post("/generate-forgot-password-otp", generateForgotPasswordOtp);
+router.post("/check-user", isUserPresent);
 
 router.get("/protected", authenticate, (req, res) => {
   res.json({ message: `Hello User ${req.user.id}, this is protected` });
