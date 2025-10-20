@@ -22,33 +22,18 @@ const io = new Server(httpServer, {
   },
 });
 
-let availablePlayers = [
-  { id: "p1", name: "Alice" },
-  { id: "p2", name: "Bob" },
-];
-
 io.on("connection", (socket) => {
-  console.log("A user connected:", socket.id);
+  console.log("A client connected:", socket.id);
 
-  socket.on("getAvailablePlayers", () => {
-    socket.emit("availablePlayers", availablePlayers);
-  });
-
-  socket.on("addPlayer", (playerName) => {
-    const newPlayer = {
-      id: `p_${Date.now()}`,
-      name: playerName,
-    };
-    availablePlayers.push(newPlayer);
-
-    io.emit("availablePlayers", availablePlayers);
+  socket.on("messageFromClient", (data) => {
+    console.log("Received from frontend:", data);
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
+    console.log("Client disconnected:", socket.id);
   });
 });
 
-app.listen(process.env.PORT, () =>
+httpServer.listen(process.env.PORT, () =>
   console.log(`Server running on port ${process.env.PORT}`)
 );
