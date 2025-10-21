@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { OTPSender } from "../Services/OTPSender.js";
+import { isUserAlreadyOnline } from "../Services/realTimeServices/realTimeServices.js";
 import {
   createUser,
   findUserByUsername,
@@ -9,7 +10,6 @@ import {
   updateNewPasswordByUserName,
   setUserAsRegistered,
   deleteUser,
-  userPresent,
 } from "../models/userModel.js";
 
 export const register = async (req, res) => {
@@ -93,8 +93,13 @@ export const login = async (req, res) => {
       token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
-
-      return res.json({ message: "Login successful", token, success: true });
+      const userCurrentStatus = await isUserAlreadyOnline(username);
+      if (!userCurrentStatus) {
+        return res.json({ message: "Login successful", token, success: true });
+      }
+      return res
+        .status(401)
+        .json({ message: "Already Online somewhere", success: false });
     }
     return res.json({ message: "User not registered", success: false });
   } catch (err) {
@@ -225,19 +230,6 @@ export const generateForgotPasswordOtp = async (req, res) => {
     return res
       .status(200)
       .json({ message: "OTP Sent successfully", success: true });
-  } catch (err) {
-    return res
-      .status(500)
-      .json({ message: "Error", error: err.message, success: false });
-  }
-};
-
-export const isUserPresent = async (req, res) => {
-  try {
-    const username = req.body;
-    if (!username)
-      return res.status(401).json({ message: false, success: true });
-    return res.status(200).JSON({ message: true, success: true });
   } catch (err) {
     return res
       .status(500)

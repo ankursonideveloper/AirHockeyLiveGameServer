@@ -1,4 +1,4 @@
-import pool from "../config/db.js";
+import pool from "../../config/db.js";
 
 export const addPlayerInAvailablePlayers = async (useremail, socketid) => {
   try {
@@ -35,5 +35,6 @@ export const isUserAlreadyOnline = async (useremail) => {
     return result.rows.length > 0;
   } catch (e) {
     console.log(`Error in isUserAlreadyOnline: ${e.stack}`);
+    return false;
   }
 };

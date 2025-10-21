@@ -23,7 +23,7 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-  console.log("A client connected:", socket.id);
+  console.log("A client connected:", socket);
 
   socket.on("messageFromClient", (data) => {
     console.log("Received from frontend:", data);
