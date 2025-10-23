@@ -30,18 +30,14 @@ const io = new Server(httpServer, {
 
 io.use((socket, next) => {
   const token = socket.handshake.auth.token;
-  console.log(`TT: Token: ${JSON.stringify(token, null, 2)}`);
 
   if (!token) {
     return next(new Error("Authentication error: No token provided."));
   }
 
   try {
-    console.log(`Hi`);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(`Decoded: ${decoded}`);
     socket.user = decoded;
-    console.log(`Socket.User: ${socket.user}`);
     next();
   } catch (err) {
     return next(new Error("Authentication error: Invalid token."));

@@ -43,5 +43,5 @@ export const fetchAllAvailableUsers = async () => {
   const allAvailableUsers = await pool.query(
     "Select u.username from available_players avl left join users u on u.id = avl.user_id"
   );
-  return allAvailableUsers.rows;
+  return allAvailableUsers.rows.map((player) => player.username);
 };
